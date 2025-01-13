@@ -1,11 +1,13 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faHouse, faThumbTack, faThumbTackSlash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCalendarDay, faCalendarWeek, faCalendarDays, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 const items = [
   { name: "Home", url: "/home", icon: faHouse },
-  { name: "Itens pendentes", url: "#", icon: faThumbTack },
-  { name: "Itens concluidos", url: "#", icon: faThumbTackSlash },
+  { name: "Hoje", url: "/today", icon: faCalendarDay },
+  { name: "Esta semana", url: "/thisweek", icon: faCalendarWeek },
+  { name: "Este mês", url: "/thismonth", icon: faCalendarDays },
 ];
 
 function Navbar() {
@@ -16,10 +18,10 @@ function Navbar() {
         <ul className="w-full">
           {items.map((item, index) => (
             <li key={index} className="w-full mb-4">
-              <a className="flex flex-col items-center p-2 hover:bg-gray-700 rounded" href={item.url}>
+              <Link className="flex flex-col items-center p-2 hover:bg-gray-700 rounded" to={item.url}>
                 <FontAwesomeIcon icon={item.icon} className="mb-2" />
                 <span className="text-xs text-center">{item.name}</span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

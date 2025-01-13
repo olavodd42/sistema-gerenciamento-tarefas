@@ -1,6 +1,9 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './home';
+import Today from './today';
+import ThisWeek from './thisweek';
+import ThisMonth from './thismonth';
 
 function App() {
   return (
@@ -62,6 +65,10 @@ function App() {
         />
         {/* Rota para a página home */}
         <Route path="/home" element={<Home />} />
+        {/* Rota para a página today */}
+        <Route path="/today" element={<Today />} />
+        <Route path="/thisweek" element={<ThisWeek />} />
+        <Route path="/thismonth" element={<ThisMonth />} />
       </Routes>
     </Router>
   );
