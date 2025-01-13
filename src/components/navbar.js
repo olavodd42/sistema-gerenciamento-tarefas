@@ -16,16 +16,15 @@ function Navbar() {
   const toggleNavbar = () => setIsVisible(!isVisible);
 
   return (
-    <nav className={`h-screen ${isVisible ? "w-[15%]" : "w-[4%]"} bg-gray-800 text-white fixed transition-all duration-300`}>
+    <nav className={`h-screen ${isVisible ? "w-[4%]" : "w-[4%]"} bg-gray-800 text-white fixed transition-all duration-300`}>
       <div className="flex flex-col items-center relative">
         {/* Botão de menu */}
-        <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4 z-50">
           <FontAwesomeIcon
             icon={faBars}
             className="cursor-pointer text-white"
             onClick={toggleNavbar}
             style={{
-              zIndex: 50,
               fontSize: "1.5rem",
             }}
           />
