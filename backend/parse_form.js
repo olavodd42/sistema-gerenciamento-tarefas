@@ -17,6 +17,7 @@ app.get('/posts', (req, res) => {
 app.post('/posts', async (req, res) => {
   const id = randomBytes(4).toString('hex');
   const { taskName, taskDescription, taskDate, taskTime, endTime } = req.body;
+  const ended = false;
 
   posts[id] = {
     id,
@@ -24,7 +25,8 @@ app.post('/posts', async (req, res) => {
     taskDescription,
     taskDate,
     taskTime,
-    endTime
+    endTime,
+    ended
   };
 
   res.status(201).send(posts[id]);
