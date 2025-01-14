@@ -3,11 +3,12 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^4.21.2",
         "nodemon": "^3.1.9"
     },
     "scripts": {
-      "start": "nodemon app.js"
+        "start": "nodemon app.js"
     },
     "eslintConfig": {},
     "browserslist": {
