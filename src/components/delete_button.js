@@ -4,7 +4,7 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 function DeleteButton ({ onClick }) {
   return (
-    <div className="absolute top-4 right-4">
+    <div className="absolute bottom-2 right-2">
       <FontAwesomeIcon
         icon={faTrashCan}s
         className="cursor-pointer text-white"
