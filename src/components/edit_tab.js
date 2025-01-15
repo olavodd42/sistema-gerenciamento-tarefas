@@ -1,46 +1,73 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
+import { parse, format } from 'date-fns';
 
-const EditTab = ({ taskId }) => {
+const EditTab = ({ taskId, setTarefas, tarefas }) => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskDate, setTaskDate] = useState('');
   const [taskTime, setTaskTime] = useState('');
-  const [endTime, setEndTime] = useState('00:00');
+  const [endTime, setEndTime] = useState('');
 
   useEffect(() => {
     async function fetchTask() {
       try {
         const response = await axios.get(`http://localhost:4000/api/tarefas/${taskId}`);
         const task = response.data;
+
+  
         setTaskName(task.nome_tarefa);
         setTaskDescription(task.descricao);
-        setTaskDate(task.data_hora.split('T')[0]); // Assuming the date is in ISO format
-        setTaskTime(task.data_hora.split('T')[1].substring(0, 5)); // Assuming the time is in ISO format
-        setEndTime(task.hora_termino.substring(0, 5));
+        setTaskDate(format(new Date(task.data_hora), 'dd/MM/yyyy')); // Corrigido formato de data;
+        setTaskTime(format(new Date(task.data_hora), 'HH:mm')); // Formato de 24 horas
+        setEndTime(task.hora_termino); // Formato de 24 horas
+        console.log('endtime:', task.hora_termino);
       } catch (error) {
         console.error('Erro ao buscar tarefa:', error);
       }
     }
-
+  
     if (taskId) {
       fetchTask();
     }
-  }, [taskId]);
+  }, [taskId]);  
 
   const onSubmit = async event => {
     event.preventDefault();
-
-    await axios.put(`http://localhost:4000/api/tarefas/${taskId}`, {
-      taskName,
-      taskDescription,
-      taskDate,
-      taskTime,
-      endTime,
-    });
-    
-
-    // Handle the server's response and update the UI as needed
+  
+    // Converter data do formato DD/MM/YYYY para YYYY-MM-DD
+    const parsedDate = parse(taskDate, 'dd/MM/yyyy', new Date());
+    const formattedDate = format(parsedDate, 'yyyy-MM-dd');
+  
+    // Combinar data e hora no formato timestamp
+    const taskTimestamp = `${formattedDate} ${taskTime}:00`;
+    const formattedEndTime = `${endTime}`;
+    console.log('taskTimestamp:', taskTimestamp);
+    console.log('formattedEndTime:', formattedEndTime);
+  
+    try {
+      await axios.put(`http://localhost:4000/api/tarefas/${taskId}`, {
+        taskName,
+        taskDescription,
+        taskTimestamp,
+        endTime: endTime
+      });
+  
+      setTarefas(tarefas.map((tarefa) => {  
+        if (tarefa.id === taskId) {
+          return {
+            ...tarefa,
+            taskName,
+            taskDescription,
+            data_hora: taskTimestamp,
+            hora_termino: formattedEndTime
+          };
+        }
+        return tarefa;
+      }));
+    } catch (error) {
+      console.error('Erro ao atualizar tarefa:', error);
+    }
   };
 
   return (
@@ -97,7 +124,8 @@ const EditTab = ({ taskId }) => {
             value={taskDate}
             onChange={(e) => setTaskDate(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Select date"
+            placeholder="DD/MM/YYYY"
+            required
           />
         </div>
       </div>

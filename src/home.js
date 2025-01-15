@@ -91,7 +91,7 @@ function Home() {
             <div>{tarefa.hora_termino}</div>
             <EditButton onClick={() => toggleEditTab(index, tarefa.id)} />
             <DeleteButton onClick={() => openDelete(tarefa)} />
-            {editTabsVisibility[index] && <EditTab taskId={tarefa.id} />}
+            {editTabsVisibility[index] && <EditTab taskId={tarefa.id} tarefas={tarefas} setTarefas={setTarefas} />}
             <form className="inline flex items-center justify-center space-x-2">
             <input
               type="checkbox"

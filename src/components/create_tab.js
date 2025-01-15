@@ -11,7 +11,9 @@ const CreateTab = () => {
   const onSubmit = async event => {
     event.preventDefault();
 
-    await axios.post('http://localhost:4000/api/create', {
+
+
+    await axios.post('http://localhost:4000/api/tarefas', {
       taskName: taskName,
       taskDescription: taskDescription,
       taskDate: taskDate,
