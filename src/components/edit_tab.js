@@ -31,14 +31,14 @@ const EditTab = ({ taskId }) => {
   const onSubmit = async event => {
     event.preventDefault();
 
-    await axios.post(`http://localhost:4000/api/tarefas/${taskId}`, {
-      id: taskId,
-      taskName: taskName,
-      taskDescription: taskDescription,
-      taskDate: taskDate,
-      taskTime: taskTime,
-      endTime: endTime
+    await axios.put(`http://localhost:4000/api/tarefas/${taskId}`, {
+      taskName,
+      taskDescription,
+      taskDate,
+      taskTime,
+      endTime,
     });
+    
 
     // Handle the server's response and update the UI as needed
   };

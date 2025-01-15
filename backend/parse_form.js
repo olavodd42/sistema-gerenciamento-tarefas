@@ -34,9 +34,23 @@ async function editTarefa(id, nome, desc, data_hora, hora_fim) {
   }
 }
 
+async function updateConcluido(id, concluido) {
+  const query = 'UPDATE tarefas SET concluido = $2 WHERE id = $1 RETURNING *';
+  const valores = [id, concluido];
+
+  try {
+    const result = await db.query(query, valores);
+    console.log('Tarefa atualizada:', result.rows[0]);
+    return result.rows[0];
+  } catch (err) {
+    console.error('Erro ao atualizar tarefa:', err.stack);
+    throw err;
+  }
+}
+
 async function getTableEntries(res) {
   try {
-    const result = await db.query('SELECT * FROM tarefas');
+    const result = await db.query('SELECT * FROM tarefas ORDER BY DATA_HORA ASC');
     res.send(result.rows); // Array of objects representing table rows
   } catch (err) {
     console.error('Erro ao buscar dados da tabela:', err);
@@ -54,7 +68,7 @@ app.get('/api/tarefas', (req, res) => {
   getTableEntries(res);
 });
 
-app.post('/create', async (req, res) => {
+app.post('/api/create', async (req, res) => {
   const id = crypto.randomUUID();
   const { taskName, taskDescription, taskDate, taskTime, endTime } = req.body;
   const ended = false;
@@ -83,30 +97,62 @@ app.post('/create', async (req, res) => {
   }
 });
 
-app.post('/api/tarefas/:id', async (req, res) => {
+app.put('/api/tarefas/:id', async (req, res) => {
   const { id } = req.params;
   const { taskName, taskDescription, taskDate, taskTime, endTime } = req.body;
 
-  // Converter data do formato DD/MM/YYYY para YYYY-MM-DD
+  // Converter data e hora
   const [day, month, year] = taskDate.split('/');
   const formattedDate = `${year}-${month}-${day}`;
-
-  // Combinar data e hora no formato timestamp
   const taskTimestamp = `${formattedDate} ${taskTime}`;
   const endTimestamp = `${formattedDate} ${endTime}`;
 
   try {
     const tarefa = await editTarefa(id, taskName, taskDescription, taskTimestamp, endTimestamp);
-    editPosts[id] = {
-      id,
-      taskName,
-      taskDescription,
-      taskTimestamp,
-      endTimestamp
-    };
-    res.status(200).send(editPosts[id]);
+    res.status(200).send(tarefa);
+  } catch (err) {
+    console.error('Erro ao atualizar tarefa:', err);
+    res.status(500).send({ error: 'Erro ao atualizar tarefa' });
+  }
+});
+
+app.get('/api/tarefas/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query('SELECT * FROM tarefas WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).send({ error: 'Tarefa não encontrada' });
+    }
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error('Erro ao buscar tarefa:', err);
+    res.status(500).send({ error: 'Erro ao buscar tarefa' });
+  }
+});
+
+
+app.patch('/api/tarefas/:id', async (req, res) => {
+  const { id } = req.params;
+  const { concluido } = req.body;
+
+  try {
+    const tarefa = await updateConcluido(id, concluido);
+    res.status(200).send(tarefa);
   } catch (err) {
     res.status(500).send({ error: 'Erro ao atualizar tarefa' });
+  }
+});
+
+app.delete('http://localhost:4000/api/tarefas/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await db.query('DELETE FROM tarefas WHERE id = $1', [id]);
+    res.status(204).send({});
+  } catch (err) {
+    console.error('Erro ao deletar tarefa:', err);
+    res.status(500).send({ error: 'Erro ao deletar tarefa' });
   }
 });
 

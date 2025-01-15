@@ -5,14 +5,17 @@ import EditButton from "./components/edit_button";
 import DeleteButton from "./components/delete_button";
 import CreateTab from "./components/create_tab";
 import EditTab from "./components/edit_tab";
-import { format } from 'date-fns';
-
+import { format, set } from 'date-fns';
+import axios from 'axios';
+import ConfirmBox from './components/confirmBox';
 
 function Home() {
   const [isTabVisible, setIsTabVisible] = useState(false);
   const [editTabsVisibility, setEditTabsVisibility] = useState([]);
   const [tarefas, setTarefas] = useState([]);
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [deleteData, setDeleteData] = useState({});
 
   useEffect(() => {
     async function fetchTarefas() {
@@ -42,9 +45,35 @@ function Home() {
     setEditingTaskId(id);
   };
 
-  const confirmDelete = () => {
-    //confirm("Tem certeza que deseja deletar?");
+  const handleCheckboxChange = async (index) => {
+    const updatedTarefas = [...tarefas];
+    updatedTarefas[index].concluido = !updatedTarefas[index].concluido;
+  
+    try {
+      await axios.patch(`http://localhost:4000/api/tarefas/${updatedTarefas[index].id}`, {
+        concluido: updatedTarefas[index].concluido,
+      });
+      setTarefas(updatedTarefas); // Atualiza o estado local somente após sucesso na API
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+    }
   };
+
+  const openDelete = (task)=>{
+    setOpen(true);
+    setDeleteData(task);
+  }
+
+  const deleteTask = async () => {
+    try {
+      await axios.delete(`http://localhost:4000/api/tarefas/${deleteData.id}`);
+      setTarefas(tarefas.filter(tarefa => tarefa.id !== deleteData.id));
+      setOpen(false);
+    } catch (error) {
+      console.error("Erro ao deletar tarefa:", error);
+    }
+  };
+  
 
   return (
     <div className="flex">
@@ -61,17 +90,17 @@ function Home() {
             <div>{format(new Date(tarefa.data_hora), 'dd/MM/yyyy HH:mm:ss')}</div>
             <div>{tarefa.hora_termino}</div>
             <EditButton onClick={() => toggleEditTab(index, tarefa.id)} />
-            <DeleteButton onClick={confirmDelete} />
+            <DeleteButton onClick={() => openDelete(tarefa)} />
             {editTabsVisibility[index] && <EditTab taskId={tarefa.id} />}
             <form className="inline flex items-center justify-center space-x-2">
-              <input
-                type="checkbox"
-                id={`concluido${index}`}
-                name="concluido"
-                value="concluido"
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                readOnly
-              />
+            <input
+              type="checkbox"
+              id={`concluido${index}`}
+              name="concluido"
+              checked={tarefa.concluido} // Ligação ao estado atual da tarefa
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              onChange={() => handleCheckboxChange(index)} // Atualiza o estado ao clicar
+            />
               <label
                 htmlFor={`concluido${index}`}
                 className="text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -82,6 +111,12 @@ function Home() {
           </div>
         ))}
       </div>
+      <ConfirmBox
+        open={open}
+        closeDialog={() => setOpen(false)}
+        title={deleteData?.nome_tarefa}
+        deleteFunction={deleteTask}
+      />
     </div>
   );
 }

@@ -8,7 +8,7 @@ function DeleteButton ({ onClick }) {
       <FontAwesomeIcon
         icon={faTrashCan}s
         className="cursor-pointer text-white"
-        //onClick={onClick}
+        onClick={onClick}
       />
     </div>
   );
