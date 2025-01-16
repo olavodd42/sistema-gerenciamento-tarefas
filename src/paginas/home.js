@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from "./components/navbar";
-import CreateButton from "./components/create_button";
-import EditButton from "./components/edit_button";
-import DeleteButton from "./components/delete_button";
-import CreateTab from "./components/create_tab";
-import EditTab from "./components/edit_tab";
+import Navbar from "../components/navbar";
+import CreateButton from "../components/create_button";
+import EditButton from "../components/edit_button";
+import DeleteButton from "../components/delete_button";
+import CreateTab from "../components/create_tab";
+import EditTab from "../components/edit_tab";
 import { format, set } from 'date-fns';
 import axios from 'axios';
-import ConfirmBox from './components/confirmBox';
+import ConfirmBox from '../components/confirmBox';
+import toggleTab from '../functions/toggleTab';
+import toggleEditTab from '../functions/toggleEditTab';
+import deleteTask from '../functions/deleteTask';
+import openDelete from '../functions/openDelete';
+import handleCheckboxChange from '../functions/handleCheckboxChange';
 
 function Home() {
   const [isTabVisible, setIsTabVisible] = useState(false);
@@ -32,47 +37,7 @@ function Home() {
     fetchTarefas();
   }, []);
 
-  const toggleTab = () => {
-    setIsTabVisible(!isTabVisible);
-  };
-
-  const toggleEditTab = (index, id) => {
-    setEditTabsVisibility((prevVisibility) => {
-      const newVisibility = [...prevVisibility];
-      newVisibility[index] = !newVisibility[index];
-      return newVisibility;
-    });
-    setEditingTaskId(id);
-  };
-
-  const handleCheckboxChange = async (index) => {
-    const updatedTarefas = [...tarefas];
-    updatedTarefas[index].concluido = !updatedTarefas[index].concluido;
   
-    try {
-      await axios.patch(`http://localhost:4000/api/tarefas/${updatedTarefas[index].id}`, {
-        concluido: updatedTarefas[index].concluido,
-      });
-      setTarefas(updatedTarefas); // Atualiza o estado local somente após sucesso na API
-    } catch (error) {
-      console.error("Erro ao atualizar tarefa:", error);
-    }
-  };
-
-  const openDelete = (task)=>{
-    setOpen(true);
-    setDeleteData(task);
-  }
-
-  const deleteTask = async () => {
-    try {
-      await axios.delete(`http://localhost:4000/api/tarefas/${deleteData.id}`);
-      setTarefas(tarefas.filter(tarefa => tarefa.id !== deleteData.id));
-      setOpen(false);
-    } catch (error) {
-      console.error("Erro ao deletar tarefa:", error);
-    }
-  };
   
 
   return (
@@ -80,7 +45,7 @@ function Home() {
       <Navbar />
 
       <div className="relative ml-[4%] overflow-y-auto p-4 h-screen text-center bg-gray-600 box-border h-screen flex-grow flex flex-col">
-        <CreateButton onClick={toggleTab} />
+        <CreateButton onClick={()=>toggleTab({setIsTabVisible,isTabVisible})} />
         {isTabVisible && <CreateTab />}
 
         {tarefas.map((tarefa, index) => (
@@ -89,8 +54,8 @@ function Home() {
             <div>{tarefa.descricao}</div>
             <div>{format(new Date(tarefa.data_hora), 'dd/MM/yyyy HH:mm:ss')}</div>
             <div>{tarefa.hora_termino}</div>
-            <EditButton onClick={() => toggleEditTab(index, tarefa.id)} />
-            <DeleteButton onClick={() => openDelete(tarefa)} />
+            <EditButton onClick={() => toggleEditTab(index, tarefa.id, {setEditTabsVisibility, setEditingTaskId})} />
+            <DeleteButton onClick={() => openDelete(tarefa, {setOpen, setDeleteData})} />
             {editTabsVisibility[index] && <EditTab taskId={tarefa.id} tarefas={tarefas} setTarefas={setTarefas} />}
             <form className="inline flex items-center justify-center space-x-2">
             <input
@@ -99,7 +64,7 @@ function Home() {
               name="concluido"
               checked={tarefa.concluido} // Ligação ao estado atual da tarefa
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              onChange={() => handleCheckboxChange(index)} // Atualiza o estado ao clicar
+              onChange={() => handleCheckboxChange(index, {tarefas, setTarefas})} // Atualiza o estado ao clicar
             />
               <label
                 htmlFor={`concluido${index}`}
@@ -115,7 +80,7 @@ function Home() {
         open={open}
         closeDialog={() => setOpen(false)}
         title={deleteData?.nome_tarefa}
-        deleteFunction={deleteTask}
+        deleteFunction={()=>deleteTask({deleteData, setTarefas, tarefas, setOpen})}
       />
     </div>
   );

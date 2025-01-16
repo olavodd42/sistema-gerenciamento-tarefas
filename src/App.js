@@ -1,9 +1,10 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './home';
-import Today from './today';
-import ThisWeek from './thisweek';
-import ThisMonth from './thismonth';
+import Home from './paginas/home';
+import Today from './paginas/today';
+import ThisWeek from './paginas/thisweek';
+import ThisMonth from './paginas/thismonth';
+import Cadastro from './paginas/cadastro';
 
 function App() {
   return (
@@ -47,9 +48,12 @@ function App() {
                       >
                         Sign In
                       </button>
-                      <div className="mt-4">
+                      <div className="mt-4 relative p-2">
                         <a href="#" className="text-black hover:underline">
                           Forgot password?
+                        </a>
+                        <a href="/cadastro" className="text-black hover:underline absolute right-0">
+                          Cadastrar-se
                         </a>
                       </div>
                     </div>
@@ -69,6 +73,7 @@ function App() {
         <Route path="/today" element={<Today />} />
         <Route path="/thisweek" element={<ThisWeek />} />
         <Route path="/thismonth" element={<ThisMonth />} />
+        <Route path="/cadastro" element={<Cadastro />} />
       </Routes>
     </Router>
   );
