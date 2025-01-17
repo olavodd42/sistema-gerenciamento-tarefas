@@ -3,6 +3,34 @@ const db = require("../db");
 const { startOfWeek, endOfWeek, format, startOfMonth, endOfMonth } = require('date-fns');
 let createPosts = {};
 let editPosts = {};
+
+// Definindo a função editTarefa
+async function editTarefa(id, taskName, taskDescription, taskTimestamp, endTime) {
+  try {
+    const result = await db.query(
+      'UPDATE tarefas SET nome_tarefa = $1, descricao = $2, data_hora = $3, hora_termino = $4 WHERE id = $5 RETURNING *',
+      [taskName, taskDescription, taskTimestamp, endTime, id]
+    );
+    return result.rows[0];
+  } catch (err) {
+    console.error('Erro ao atualizar tarefa:', err);
+    throw err;
+  }
+}
+
+async function inserirTarefa(id, taskName, taskDescription, taskTimestamp, endTimestamp, ended) {
+  try {
+    const result = await db.query(
+      'INSERT INTO tarefas (id, nome_tarefa, descricao, data_hora, hora_termino, concluido) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [id, taskName, taskDescription, taskTimestamp, endTimestamp, ended]
+    );
+    return result.rows[0];
+  } catch (err) {
+    console.error('Erro ao inserir tarefa:', err);
+    throw err;
+  }
+}
+
 async function postTask(req, res) {
     const id = crypto.randomUUID();
   const { taskName, taskDescription, taskDate, taskTime, endTime } = req.body;
@@ -36,7 +64,7 @@ async function postTask(req, res) {
     const { id } = req.params;
   const { taskName, taskDescription, taskTimestamp, endTime } = req.body;
 
-  console.log(taskName, taskDescription, taskTimestamp, endTime);
+  //(taskName, taskDescription, taskTimestamp, endTime);
 
   // Validação
   if (!taskName || !taskDescription || !taskTimestamp || !endTime) {
@@ -53,18 +81,22 @@ async function postTask(req, res) {
   }
 }
   
-  async function patchTask(req, res) {
-    const { id } = req.params;
-    const { concluido } = req.body;
+async function patchTask(req, res) {
+  const { id } = req.params;
+  const { concluido } = req.body;
 
-    try {
-        const tarefa = await updateConcluido(id, concluido);
-        res.status(200).send(tarefa);
-    } catch (err) {
-        res.status(500).send({ error: 'Erro ao atualizar tarefa' });
-    }
+  try {
+    const result = await db.query(
+      'UPDATE tarefas SET concluido = $1 WHERE id = $2 RETURNING *',
+      [concluido, id]
+    );
+    res.status(200).send(result.rows[0]);
+  } catch (err) {
+    console.error('Erro ao atualizar tarefa:', err);
+    res.status(500).send({ error: 'Erro ao atualizar tarefa' });
   }
-  
+}
+
   async function getTask(req, res) {
     try {
       const result = await db.query('SELECT * FROM tarefas ORDER BY DATA_HORA ASC');
@@ -119,24 +151,29 @@ async function postTask(req, res) {
     }
   }
 
-  async function getATask(req, res) {
-    const { id } = req.params;
+  const { validate: isUuid } = require('uuid');
 
-    try {
-        const result = await db.query('SELECT * FROM tarefas WHERE id = $1', [id]);
-        if (result.rows.length === 0) {
-        return res.status(404).send({ error: 'Tarefa não encontrada' });
-    }
-
-        const task = result.rows[0];
-        console.log(task);
-
-        res.send(task);
-    } catch (err) {
-        console.error('Erro ao buscar tarefa:', err);
-        res.status(500).send({ error: 'Erro ao buscar tarefa' });
-    }
+async function getATask(req, res) {
+  const { id } = req.params;
+  console.log(req.query);
+  // Verificar se o parâmetro é um UUID válido
+  if (!isUuid(id)) {
+    return getTaskOrdered(req, res);
   }
+
+  try {
+    const result = await db.query('SELECT * FROM tarefas WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).send({ error: 'Tarefa não encontrada' });
+    }
+
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error('Erro ao buscar tarefa:', err);
+    res.status(500).send({ error: 'Erro ao buscar tarefa' });
+  }
+}
+
 
   async function deleteTask(req, res) {
     const { id } = req.params;
@@ -150,4 +187,25 @@ async function postTask(req, res) {
   }
 }
 
-module.exports = { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask };
+async function getTaskOrdered(req, res) {
+  console.log(req);
+  try {
+    
+    const order = req.query.order;
+    let result;
+    if (order === 'data') {
+      result = await db.query('SELECT * FROM tarefas ORDER BY DATA_HORA ASC');
+    } else if (order === 'nome') {
+      result = await db.query('SELECT * FROM tarefas ORDER BY NOME_TAREFA ASC');
+    } else {
+      return res.status(400).send({ error: 'Parâmetro de ordenação inválido' });
+    }
+    
+    res.send(result.rows); // Array of objects representing table rows
+  } catch (err) {
+    console.error('Erro ao buscar dados da tabela:', err);
+    res.status(500).send({ error: 'Erro ao buscar dados da tabela' });
+  }
+}
+
+module.exports = { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered };
