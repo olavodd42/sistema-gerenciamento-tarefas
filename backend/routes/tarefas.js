@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router()
 const { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered } = require('../controllers/tarefas.js');
 
+
 router.route('/order').get(getTaskOrdered);
 
 router.route('/hoje').get(getTodayTask);

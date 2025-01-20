@@ -42,12 +42,14 @@ function App() {
                           className="border border-gray-300 p-2 rounded w-full"
                         />
                       </div>
+                      <a href="/home" className="mt-4 text-blue-500 hover:underline">
                       <button
                         type="submit"
                         className="bg-black text-white p-2 rounded hover:bg-gray-500 w-full"
                       >
                         Sign In
                       </button>
+                      </a>
                       <div className="mt-4 relative p-2">
                         <a href="#" className="text-black hover:underline">
                           Forgot password?
@@ -63,6 +65,7 @@ function App() {
                     Teste
                   </a>
                 </div>
+
               </div>
             </div>
           }
