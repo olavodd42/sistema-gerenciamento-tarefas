@@ -71,10 +71,6 @@ const Login = () => {
             </div>
           </div>
         </form>
-        {/* Link para a página home */}
-        <a href="/home" className="mt-4 text-blue-500 hover:underline">
-          Teste
-        </a>
       </div>
 
     </div>
