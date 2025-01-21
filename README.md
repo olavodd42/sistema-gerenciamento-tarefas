@@ -3,64 +3,64 @@
 Este é um aplicativo de gerenciamento de tarefas que permite aos usuários criar, editar, visualizar e excluir tarefas. O projeto é dividido em duas partes: o backend, que lida com a lógica do servidor e a comunicação com o banco de dados, e o frontend, que fornece a interface do usuário.
 
 ## Estrutura do Projeto
-├── backend/ 
+├── backend/ <br>
 │       ├── controllers/ 
-│       │       ├── sist_gerenciamento_tarefas.code-workspace 
-│       │       └── tarefas.js 
-│       ├── middleware/ 
-│       │       └── authMiddleware.js
-│       ├── models/
-│       │       └── userAuth.js
-│       ├── routes/ 
-│       │       ├── authRoutes.js
-│       │       └── protectedRoutes.js 
-│       ├── db.js 
-│       ├── index.js 
-│       ├── parsebackend.js 
-│       └── package.json 
-├── public/ 
-│       ├── index.html 
-│       ├── manifest.json 
-│       └── robots.txt 
-├── src/ 
-│   ├── components/ 
-│   │       ├── confirmBox.js 
-│   │       ├── create_button.js 
-│   │       ├── create_tab.js 
-│   │       ├── delete_button.js 
-│   │       ├── edit_button.js 
-│   │       ├── edit_tab.js 
-│   │       ├── filterComponent.js 
-│   │       ├── logout.js 
-│   │       ├── navbar.js 
-│   │       └── protectedRoute.js 
-│   ├── functions/ 
-│   │       ├── authProvider.js 
-│   │       ├── deleteTask.js 
-│   │       ├── handleCheckboxChange.js 
-│   │       ├── openDelete.js 
-│   │       ├── toggleEditTab.js 
-│   │       └── toggleTab.js 
-│   ├── paginas/ 
-│   │       ├── cadastro.js 
-│   │       ├── home.js 
-│   │       ├── login.js 
-│   │       ├── thismonth.js 
-│   │       ├── thisweek.js 
-│   │       └── today.js 
-│   ├── App.css 
-│   ├── App.js 
-│   ├── App.test.js 
-│   ├── index.css 
-│   ├── index.js 
-│   ├── reportWebVitals.js 
-│   ├── Router.js 
-│   └── setupTests.js 
-├── .gitignore 
-├── .gitmodules 
-├── package.json 
-├── README.md 
-└── tailwind.config.js
+│       │       ├── sist_gerenciamento_tarefas.code-workspace <br>
+│       │       └── tarefas.js <br>
+│       ├── middleware/ <br>
+│       │       └── authMiddleware.js<br>
+│       ├── models/<br>
+│       │       └── userAuth.js<br>
+│       ├── routes/ <br>
+│       │       ├── authRoutes.js<br>
+│       │       └── protectedRoutes.js <br>
+│       ├── db.js <br>
+│       ├── index.js <br>
+│       ├── parsebackend.js <br>
+│       └── package.json <br>
+├── public/ <br>
+│       ├── index.html <br>
+│       ├── manifest.json <br>
+│       └── robots.txt <br>
+├── src/ <br>
+│   ├── components/ <br>
+│   │       ├── confirmBox.js <br>
+│   │       ├── create_button.js <br>
+│   │       ├── create_tab.js <br>
+│   │       ├── delete_button.js <br>
+│   │       ├── edit_button.js <br>
+│   │       ├── edit_tab.js <br>
+│   │       ├── filterComponent.js <br>
+│   │       ├── logout.js <br>
+│   │       ├── navbar.js <br>
+│   │       └── protectedRoute.js <br>
+│   ├── functions/ <br>
+│   │       ├── authProvider.js <br>
+│   │       ├── deleteTask.js <br>
+│   │       ├── handleCheckboxChange.js <br>
+│   │       ├── openDelete.js <br>
+│   │       ├── toggleEditTab.js <br>
+│   │       └── toggleTab.js <br>
+│   ├── paginas/ <br>
+│   │       ├── cadastro.js <br>
+│   │       ├── home.js <br>
+│   │       ├── login.js <br>
+│   │       ├── thismonth.js <br>
+│   │       ├── thisweek.js <br>
+│   │       └── today.js <br>
+│   ├── App.css <br>
+│   ├── App.js <br>
+│   ├── App.test.js <br>
+│   ├── index.css <br>
+│   ├── index.js <br>
+│   ├── reportWebVitals.js <br>
+│   ├── Router.js <br>
+│   └── setupTests.js <br>
+├── .gitignore <br>
+├── .gitmodules <br>
+├── package.json <br>
+├── README.md <br>
+└── tailwind.config.js<br>
 
 ## Tecnologias Utilizadas
 
