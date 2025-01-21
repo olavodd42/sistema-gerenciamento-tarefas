@@ -1,5 +1,8 @@
 const crypto = require("crypto");
 const db = require("../db");
+const bcrypt = require('bcrypt');
+const User = require('../models/userAuth');
+const jwt = require('jsonwebtoken');
 const { startOfWeek, endOfWeek, format, startOfMonth, endOfMonth } = require('date-fns');
 let createPosts = {};
 let editPosts = {};
@@ -64,6 +67,7 @@ async function postTask(req, res) {
     const { id } = req.params;
   const { taskName, taskDescription, taskTimestamp, endTime } = req.body;
 
+  
   //(taskName, taskDescription, taskTimestamp, endTime);
 
   // Validação
@@ -210,40 +214,86 @@ async function getTaskOrdered(req, res) {
 
 async function registerUser(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, password, confirmPassword } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Passwords do not match' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
+
+    const user = User.build({ email, password: hashedPassword }); // Use .build para criar a instância
+    await user.save(); // Salva a instância no banco de dados
+
+    const token = jwt.sign({ userId: user.id }, 'your-secret-key', {
+      expiresIn: '1h',
+    });
+    
+    res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
+    console.error('Registration failed:', error);
     res.status(500).json({ error: 'Registration failed' });
   }
 }
 
+
 async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ error: 'Authentication failed' });
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
     }
 
+    // Log email for debugging
+    console.log(`Login attempt for email: ${email}`);
+
+    // Fetch user by email
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      console.log('User not found');
+      return res.status(401).json({ error: 'Authentication failed: user not found' });
+    }
+
+    // Compare password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Authentication failed' });
+      console.log('Invalid password');
+      return res.status(401).json({ error: 'Authentication failed: invalid password' });
     }
 
-    const token = jwt.sign({ userId: user._id }, 'your-secret-key', {
+    // Create JWT
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'your-secret-key', {
       expiresIn: '1h',
     });
+
+    console.log('Login successful, token generated');
     res.status(200).json({ token });
   } catch (error) {
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Login failed:', error); // Log the exact error
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
 
 async function protectedRoute(req, res) {
   res.status(200).json({ message: 'Acesso autorizado' });
 }
 
-module.exports = { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered, registerUser, loginUser, protectedRoute };
+// const User = require('./models/userAuth'); // Certifique-se de que o caminho esteja correto
+
+async function getAllUsers(req, res) {
+  try {
+    const users = await User.findAll(); // Recupera todas as entradas da tabela Users
+    res.send(users); // Exibe os usuários no console
+  } catch (error) {
+    res.send('Erro ao buscar usuários:', error);
+  }
+}
+
+
+module.exports = { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered, registerUser, loginUser, protectedRoute, getAllUsers };

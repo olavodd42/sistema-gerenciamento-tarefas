@@ -3,14 +3,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-const tarefasRouter = require('./routes/tarefas');
-const authRoutes = require('./routes/protectedRoutes');
+const protectedRouter = require('./routes/protectedRoutes');
+const authRouter = require('./routes/authRoutes');
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/api/tarefas', tarefasRouter);
-app.use('/api/user', authRoutes);
+app.use('/api/tarefas', protectedRouter);
+app.use('/api/user', authRouter);
 
 
 const PORT = process.env.PORT || 4000;

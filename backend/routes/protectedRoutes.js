@@ -1,15 +1,18 @@
-const { registerUser, loginUser, protectedRoute } = require('../controllers/tarefas.js');
-const User = require('../models/userAuth');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router()
-const verifyToken = require('../middleware/authMiddleware');
+const { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered } = require('../controllers/tarefas.js');
 
-router.route('/register').post(registerUser)
 
-router.route('/login').post(loginUser)
+router.route('/order').get(getTaskOrdered);
 
-router.route('/').get()
+router.route('/hoje').get(getTodayTask);
+
+router.route('/semana').get(getWeekTask);
+
+router.route('/mes').get(getMonthTask);
+
+router.route('/').get(getTask).post(postTask);
+router.route('/:id').get(getATask).put(putTask).patch(patchTask).delete(deleteTask);
+
 
 module.exports = router
