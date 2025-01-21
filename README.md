@@ -105,41 +105,41 @@ Este é um aplicativo de gerenciamento de tarefas que permite aos usuários cria
 ```npm start```
 
 ### Funcionalidades:
-*Autenticação de Usuário:
-    *Registro de novos usuários
-    *Login de usuários existentes
-    *Logout
+*Autenticação de Usuário:<br>
+    *Registro de novos usuários <br>
+    *Login de usuários existentes<br>
+    *Logout<br>
 
-*Gerenciamento de Tarefas:
-    *Criação de novas tarefas
-    *Edição de tarefas existentes
-    *Exclusão de tarefas
-    *Visualização de tarefas por dia, semana e mês
+*Gerenciamento de Tarefas:<br>
+    *Criação de novas tarefas<br>
+    *Edição de tarefas existentes<br>
+    *Exclusão de tarefas<br>
+    *Visualização de tarefas por dia, semana e mês<br>
 
 ### Rotas da API
-*Autenticação:
+*Autenticação:<br>
 
-    *POST /api/user/register - Registro de novo usuário
-    *POST /api/user/login - Login de usuário
-    *GET /api/user/logout - Logout de usuário
+    *POST /api/user/register - Registro de novo usuário <br>
+    *POST /api/user/login - Login de usuário<br>
+    *GET /api/user/logout - Logout de usuário<br>
 
-*Tarefas:
-    *GET /api/tarefas - Listar todas as tarefas
-    *POST /api/tarefas - Criar nova tarefa
-    *PUT /api/tarefas/:id - Editar tarefa existente
-    *PATCH /api/tarefas/:id - Atualizar status de conclusão da tarefa
-    *DELETE /api/tarefas/:id - Excluir tarefa
-    *GET /api/tarefas/hoje - Listar tarefas de hoje
-    *GET /api/tarefas/semana - Listar tarefas da semana
-    *GET /api/tarefas/mes - Listar tarefas do mês
+*Tarefas:<br>
+    *GET /api/tarefas - Listar todas as tarefas<br>
+    *POST /api/tarefas - Criar nova tarefa<br>
+    *PUT /api/tarefas/:id - Editar tarefa existente<br>
+    *PATCH /api/tarefas/:id - Atualizar status de conclusão da tarefa<br>
+    *DELETE /api/tarefas/:id - Excluir tarefa<br>
+    *GET /api/tarefas/hoje - Listar tarefas de hoje<br>
+    *GET /api/tarefas/semana - Listar tarefas da semana<br>
+    *GET /api/tarefas/mes - Listar tarefas do mês<br>
 
 
 ### Contribuição
-Faça um fork do projeto.
-Crie uma branch para sua feature (git checkout -b feature/nova-feature).
-Commit suas mudanças (git commit -am 'Adiciona nova feature').
-Faça um push para a branch (git push origin feature/nova-feature).
-Abra um Pull Request.
+Faça um fork do projeto.<br>
+Crie uma branch para sua feature (git checkout -b feature/nova-feature).<br>
+Commit suas mudanças (git commit -am 'Adiciona nova feature').<br>
+Faça um push para a branch (git push origin feature/nova-feature).<br>
+Abra um Pull Request.<br>
 
 
 
