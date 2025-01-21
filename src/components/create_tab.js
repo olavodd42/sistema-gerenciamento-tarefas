@@ -13,7 +13,7 @@ const CreateTab = () => {
 
 
 
-    await axios.post('http://localhost:4000/api/tarefas', {
+    await axios.post(`http://localhost:4000/api/tarefas`, {
       taskName: taskName,
       taskDescription: taskDescription,
       taskDate: taskDate,

@@ -26,7 +26,7 @@ function ThisWeek() {
   useEffect(() => {
     async function fetchTarefas() {
       try {
-        const response = await fetch('http://localhost:4000/api/tarefas/semana');
+        const response = await fetch(`http://localhost:4000/api/tarefas/semana`);
         const data = await response.json();
         setTarefas(Array.isArray(data) ? data : []);
         

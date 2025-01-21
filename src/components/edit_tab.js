@@ -12,7 +12,7 @@ const EditTab = ({ taskId, setTarefas, tarefas }) => {
   useEffect(() => {
     async function fetchTask() {
       try {
-        const response = await axios.get(`http://localhost:4000/api/tarefas/${taskId}`);
+        const response = await axios.get(`$http://localhost:4000/api/tarefas/${taskId}`);
         const task = response.data;
 
   

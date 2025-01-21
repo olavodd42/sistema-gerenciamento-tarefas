@@ -295,5 +295,9 @@ async function getAllUsers(req, res) {
   }
 }
 
+async function logoutUser(req, res) {
+  res.status(200).json({ message: 'Logout realizado com sucesso' });
+}
 
-module.exports = { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered, registerUser, loginUser, protectedRoute, getAllUsers };
+
+module.exports = { postTask, putTask, patchTask, getTask, getTodayTask, getWeekTask, getMonthTask, getATask, deleteTask, getTaskOrdered, registerUser, loginUser, protectedRoute, getAllUsers, logoutUser };

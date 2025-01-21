@@ -14,7 +14,7 @@ import deleteTask from '../functions/deleteTask';
 import openDelete from '../functions/openDelete';
 import handleCheckboxChange from '../functions/handleCheckboxChange';
 
-function Home() {
+const Home = () => {
   const [isTabVisible, setIsTabVisible] = useState(false);
   const [editTabsVisibility, setEditTabsVisibility] = useState([]);
   const [tarefas, setTarefas] = useState([]);
@@ -25,7 +25,7 @@ function Home() {
   useEffect(() => {
     async function fetchTarefas() {
       try {
-        const response = await fetch('http://localhost:4000/api/tarefas');
+        const response = await fetch(`http://localhost:4000/api/tarefas`);
         const data = await response.json();
         setTarefas(data);
         setEditTabsVisibility(new Array(data.length).fill(false));

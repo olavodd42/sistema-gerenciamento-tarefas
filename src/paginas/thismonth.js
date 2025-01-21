@@ -26,7 +26,7 @@ function ThisMonth() {
   useEffect(() => {
     async function fetchTarefas() {
       try {
-        const response = await fetch('http://localhost:4000/api/tarefas/mes');
+        const response = await fetch(`http://localhost:4000api/tarefas/mes`);
         const data = await response.json();
         setTarefas(Array.isArray(data) ? data : []);
         
